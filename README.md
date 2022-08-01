@@ -29,53 +29,67 @@ Django REST Framework simplejwt 5.1.0
 
 ## Как запустить проект
 
-Клонировать репозиторий и перейти в него в командной строке:
+#### 1.Клонируем репозиторий на локальную машину:
+```
+https://github.com/Anxeity/infra_sp2
+git clone https://github.com/Anxeity/infra_sp2.git
+```
+#### 2.Создать .env файл внутри директории infra (на одном уровне с docker-compose.yaml) Пример .env файла:
+```
+SECRET_KEY = 'p&l%385148kslhtyn^##a1)ilz@4zqj=rq&agdol^##zgl9(vs'
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=postgres
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+DB_HOST=db
+DB_PORT=5432
 
 ```
-https://github.com/alvaresShD/api_yamdb.git
+#### 3. Запуск тестов (опционально, если не нужно - переходите к следующему шагу)
+#### Создаем и активируем виртуальное окружение:
+Для Mac или Linux
 ```
-
-Перейти в папку с проектом
-
-```
+cd infra_sp2
+python3 -m venv venv
+source venv/bin/activate
 cd api_yamdb
-```
-
-Cоздать и активировать виртуальное окружение:
-
-```
-WIN: python -m venv venv
-MAC: python3 -m venv venv
-```
-
-```
-WIN: source venv/scripts/activate
-MAC: source venv/bin/activate
-```
-
-Установить зависимости из файла requirements.txt:
-
-```
-WIN: python -m pip install --upgrade pip
-MAC: python3 -m pip install --upgrade pip
-```
-
-```
 pip install -r requirements.txt
+cd ..
+pytest
 ```
 
-Выполнить миграции:
-
+Для Windows
 ```
-WIN: python manage.py migrate
-MAC: python3 manage.py migrate
+cd infra_sp2
+python -m venv venv
+source venv/Scripts/activate
+cd api_yamdb
+pip install -r requirements.txt
+cd ..
+pytest
 ```
 
-Запустить проект:
-
+#### 4.Запуск Docker контейнеров: Запустите docker-compose
 ```
-WIN: python manage.py runserver
-MAC: python3 manage.py runserver
+cd infra/
+docker-compose up -d --build
+```
+
+#### 5.Выполните миграции, создайте суперпользователя и перенесите статику:
+```
+docker-compose exec web python manage.py migrate
+docker-compose exec web python manage.py makemigrations reviews
+docker-compose exec web python manage.py createsuperuser
+docker-compose exec web python manage.py collectstatic --no-input
+```
+#### 6.Проверьте доступность сервиса
+```
+http://localhost/admin
+```
+
+### Документация
+```
+http://localhost/redoc/
 ```
 
 [Примеры запросов и документация по ссылке](http://127.0.0.1:8000/redoc/)
