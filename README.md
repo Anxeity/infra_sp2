@@ -75,12 +75,9 @@ cd infra/
 docker-compose up -d --build
 ```
 
-#### 5.Выполните миграции, создайте суперпользователя и перенесите статику:
+#### 5.Cоздайте суперпользователя:
 ```
-docker-compose exec web python manage.py migrate
-docker-compose exec web python manage.py makemigrations reviews
 docker-compose exec web python manage.py createsuperuser
-docker-compose exec web python manage.py collectstatic --no-input
 ```
 #### 6.Проверьте доступность сервиса
 ```
@@ -90,6 +87,28 @@ http://localhost/admin
 ### Документация
 ```
 http://localhost/redoc/
+```
+## Права доступа: Доступно без токена.
+```
+GET /api/v1/categories/ - Получение списка всех категорий
+GET /api/v1/genres/ - Получение списка всех жанров
+GET /api/v1/titles/ - Получение списка всех произведений
+GET /api/v1/titles/{title_id}/reviews/ - Получение списка всех отзывов
+GET /api/v1/titles/{title_id}/reviews/{review_id}/comments/ - Получение списка всех комментариев к отзыву
+```
+
+## Права доступа: Администратор
+__GET /api/v1/users/__ - Получение списка всех пользователей
+
+
+## Получение JWT-токена:
+__POST /api/v1/auth/token/__
+   
+```
+{
+  "username": "string",
+  "confirmation_code": "string"
+}
 ```
 
 [Примеры запросов и документация по ссылке](http://127.0.0.1:8000/redoc/)
